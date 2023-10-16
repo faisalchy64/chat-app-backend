@@ -22,12 +22,12 @@ app.use("/", userRoute);
 
 // not found route
 app.use((req, res, next) => {
-    res.status(404).send({ message: "Route not found." });
+    res.status(404).send({ common: { msg: "Route not found" } });
 });
 
 // error boundary
 app.use((err, req, res, next) => {
-    res.status(err.status || 500).send({ message: err.message });
+    res.status(err.status || 500).send(err);
 });
 
 app.listen(process.env.PORT, () => {
