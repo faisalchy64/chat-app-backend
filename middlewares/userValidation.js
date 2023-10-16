@@ -1,4 +1,5 @@
 const { check, validationResult } = require("express-validator");
+const User = require("../models/userModel");
 
 const signinValidation = [
     check("email")
@@ -31,6 +32,16 @@ const signupValidation = [
         .withMessage("Email is required")
         .isEmail()
         .withMessage("Give a valid email")
+        .custom(async (email) => {
+            try {
+                const user = await User.findOne({ email });
+                if (user) {
+                    throw new Error("User already exists");
+                }
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        })
         .trim(),
     check("password")
         .not()
