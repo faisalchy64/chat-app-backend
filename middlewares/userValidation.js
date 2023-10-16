@@ -9,11 +9,7 @@ const signinValidation = [
         .isEmail()
         .withMessage("Give a valid email")
         .trim(),
-    check("password")
-        .isStrongPassword({ minLength: 8, minUppercase: 0 })
-        .withMessage(
-            "Minimum 8 characters needed (at least one letter, one digit and one special character)"
-        ),
+    check("password").not().isEmpty().withMessage("Password is required"),
 ];
 
 const signupValidation = [
@@ -59,7 +55,7 @@ const signinValidationCheck = (req, res, next) => {
     if (Object.keys(errors).length === 0) {
         next();
     } else {
-        res.status(500).send(errors);
+        res.status(500).send({ errors });
     }
 };
 
@@ -69,7 +65,7 @@ const signupValidationCheck = (req, res, next) => {
     if (Object.keys(errors).length === 0) {
         next();
     } else {
-        res.status(500).send(errors);
+        res.status(500).send({ errors });
     }
 };
 
