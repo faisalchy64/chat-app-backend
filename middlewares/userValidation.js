@@ -55,7 +55,12 @@ const signinValidationCheck = (req, res, next) => {
     if (Object.keys(errors).length === 0) {
         next();
     } else {
-        res.status(500).send({ errors });
+        const result = {};
+        Object.keys(errors).forEach((error) => {
+            result[error] = errors[error].msg;
+        });
+
+        res.status(500).send(result);
     }
 };
 
@@ -65,7 +70,12 @@ const signupValidationCheck = (req, res, next) => {
     if (Object.keys(errors).length === 0) {
         next();
     } else {
-        res.status(500).send({ errors });
+        const result = {};
+        Object.keys(errors).forEach((error) => {
+            result[error] = errors[error].msg;
+        });
+
+        res.status(500).send(result);
     }
 };
 

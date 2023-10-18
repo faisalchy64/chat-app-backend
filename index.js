@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./db");
 const userRoute = require("./routes/userRoute");
+const conversationRoute = require("./routes/conversationRoute");
 
 const app = express();
 
@@ -19,10 +20,11 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", userRoute);
+app.use("/conversations", conversationRoute);
 
 // not found route
 app.use((req, res, next) => {
-    res.status(404).send({ common: { msg: "Route not found" } });
+    res.status(404).send({ message: "Page not found!" });
 });
 
 // error boundary

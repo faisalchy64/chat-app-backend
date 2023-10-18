@@ -19,7 +19,7 @@ const signin = async (req, res, next) => {
                 );
 
                 if (accessToken) {
-                    res.send({ _id, email, accessToken });
+                    res.send({ _id, name, email, accessToken });
                 }
             } else {
                 res.status(401).send({ message: "Password was wrong" });
@@ -28,7 +28,7 @@ const signin = async (req, res, next) => {
             res.status(401).send({ message: "User not found" });
         }
     } catch (err) {
-        next({ common: { msg: err.message } });
+        next({ message: "User signin failed!" });
     }
 };
 
@@ -41,11 +41,18 @@ const signup = async (req, res, next) => {
             const user = await User.create({ name, email, password });
 
             if (user) {
-                res.status(201).send({ message: "User created successfully" });
+                const { _id, name, email } = user;
+                const accessToken = jwt.sign(
+                    { _id, email },
+                    process.env.JWT_SECRET,
+                    { expiresIn: "1h" }
+                );
+
+                res.status(201).send({ _id, name, email, accessToken });
             }
         }
     } catch (err) {
-        next({ common: { msg: err.message } });
+        next({ message: "User signup failed!" });
     }
 };
 
