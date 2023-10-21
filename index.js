@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./db");
 const userRoute = require("./routes/userRoute");
 const conversationRoute = require("./routes/conversationRoute");
+const messageRoute = require("./routes/messageRoute");
 
 const app = express();
 
@@ -16,11 +17,12 @@ connectDB();
 
 // routes
 app.get("/", (req, res) => {
-    res.send("Chat App Backend");
+    res.send({ message: "chat app" });
 });
 
 app.use("/", userRoute);
 app.use("/conversations", conversationRoute);
+app.use("/messages", messageRoute);
 
 // not found route
 app.use((req, res, next) => {
