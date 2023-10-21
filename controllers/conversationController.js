@@ -1,7 +1,16 @@
 const Conversation = require("../models/conversationModel");
 
 const getConversations = async (req, res, next) => {
-    res.send("getConversations");
+    try {
+        const { id } = req.query;
+        const conversations = await Conversation.find({
+            $or: [{ "sender._id": id }, { "receiver._id": id }],
+        }).sort({ updatedAt: -1 });
+
+        res.send(conversations);
+    } catch (err) {
+        next({ message: "Get conversations failed!" });
+    }
 };
 
 const getConversation = async (req, res, next) => {
