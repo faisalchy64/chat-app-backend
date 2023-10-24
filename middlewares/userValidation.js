@@ -49,6 +49,16 @@ const signupValidation = [
         ),
 ];
 
+const emailValidation = [
+    check("email")
+        .not()
+        .isEmpty()
+        .withMessage("Email is required")
+        .isEmail()
+        .withMessage("Give a valid email")
+        .trim(),
+];
+
 const signinValidationCheck = (req, res, next) => {
     const errors = validationResult(req).mapped();
 
@@ -79,9 +89,26 @@ const signupValidationCheck = (req, res, next) => {
     }
 };
 
+const emailValidationCheck = (req, res, next) => {
+    const errors = validationResult(req).mapped();
+
+    if (Object.keys(errors).length === 0) {
+        next();
+    } else {
+        const result = {};
+        Object.keys(errors).forEach((error) => {
+            result[error] = errors[error].msg;
+        });
+
+        res.status(500).send(result);
+    }
+};
+
 module.exports = {
     signinValidation,
     signupValidation,
+    emailValidation,
     signinValidationCheck,
     signupValidationCheck,
+    emailValidationCheck,
 };

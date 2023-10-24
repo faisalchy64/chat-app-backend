@@ -3,13 +3,11 @@ const Message = require("../models/messageModel");
 const getMessages = async (req, res, next) => {
     try {
         const { id } = req.query;
-        const messages = await Message.find({ conversationId: id }).sort({
-            updatedAt: -1,
-        });
+        const messages = await Message.find({ conversationId: id });
 
         res.send(messages);
     } catch (err) {
-        next({ message: "Get messages Failed!" });
+        next({ message: "Get messages request failed." });
     }
 };
 

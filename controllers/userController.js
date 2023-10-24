@@ -56,4 +56,20 @@ const signup = async (req, res, next) => {
     }
 };
 
-module.exports = { signin, signup };
+const userCheck = async (req, res, next) => {
+    try {
+        const { email } = req.query;
+
+        const user = await User.findOne({ email }).select("name email");
+
+        if (user) {
+            res.send(user);
+        } else {
+            next({ message: "User not found!" });
+        }
+    } catch (err) {
+        next({ message: "User check failed!" });
+    }
+};
+
+module.exports = { signin, signup, userCheck };

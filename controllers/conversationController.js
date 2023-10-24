@@ -1,4 +1,5 @@
 const Conversation = require("../models/conversationModel");
+const Message = require("../models/messageModel");
 
 const getConversations = async (req, res, next) => {
     try {
@@ -9,7 +10,7 @@ const getConversations = async (req, res, next) => {
 
         res.send(conversations);
     } catch (err) {
-        next({ message: "Get conversations failed!" });
+        next({ message: "Get conversations request failed." });
     }
 };
 
@@ -28,12 +29,23 @@ const postConversation = async (req, res, next) => {
         });
 
         if (conversation) {
-            const updatedConversation = await Conversation.updateOne(
+            const updatedConversation = await Conversation.findOneAndUpdate(
                 {
                     _id: conversation._id,
                 },
-                { message, sender, receiver }
+                { message, sender, receiver },
+                { new: true }
             );
+
+            if (updatedConversation) {
+                const { _id, message, sender, receiver } = updatedConversation;
+                await Message.create({
+                    conversationId: _id,
+                    message,
+                    sender,
+                    receiver,
+                });
+            }
 
             res.send(updatedConversation);
         } else {
@@ -43,10 +55,20 @@ const postConversation = async (req, res, next) => {
                 receiver,
             });
 
+            if (createdConversation) {
+                const { _id, message, sender, receiver } = createdConversation;
+                await Message.create({
+                    conversationId: _id,
+                    message,
+                    sender,
+                    receiver,
+                });
+            }
+
             res.send(createdConversation);
         }
     } catch (err) {
-        next({ message: "Sent message failed!" });
+        next({ message: "Sent message request failed." });
     }
 };
 
