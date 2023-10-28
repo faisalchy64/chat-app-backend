@@ -14,10 +14,6 @@ const getConversations = async (req, res, next) => {
     }
 };
 
-const getConversation = async (req, res, next) => {
-    res.send("getConversation");
-};
-
 const postConversation = async (req, res, next) => {
     try {
         const { message, sender, receiver } = req.body;
@@ -39,11 +35,15 @@ const postConversation = async (req, res, next) => {
 
             if (updatedConversation) {
                 const { _id, message, sender, receiver } = updatedConversation;
-                await Message.create({
+                const createdMessage = await Message.create({
                     conversationId: _id,
                     message,
                     sender,
                     receiver,
+                });
+                io.emit("conversation", {
+                    conversation: updatedConversation,
+                    message: createdMessage,
                 });
             }
 
@@ -57,11 +57,15 @@ const postConversation = async (req, res, next) => {
 
             if (createdConversation) {
                 const { _id, message, sender, receiver } = createdConversation;
-                await Message.create({
+                const createdMessage = await Message.create({
                     conversationId: _id,
                     message,
                     sender,
                     receiver,
+                });
+                io.emit("conversation", {
+                    conversation: createdConversation,
+                    message: createdMessage,
                 });
             }
 
@@ -72,4 +76,4 @@ const postConversation = async (req, res, next) => {
     }
 };
 
-module.exports = { getConversations, getConversation, postConversation };
+module.exports = { getConversations, postConversation };
