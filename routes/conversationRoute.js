@@ -1,4 +1,5 @@
 const express = require("express");
+const verifyJWT = require("../middlewares/verifyJWT");
 const {
     getConversations,
     postConversation,
@@ -10,10 +11,11 @@ const {
 
 const router = express.Router();
 
-router.get("/", getConversations);
+router.get("/", verifyJWT, getConversations);
 
 router.post(
     "/",
+    verifyJWT,
     conversationValidation,
     conversationValidationCheck,
     postConversation
