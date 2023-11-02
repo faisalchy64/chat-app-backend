@@ -3,12 +3,23 @@ const Message = require("../models/messageModel");
 
 const getConversations = async (req, res, next) => {
     try {
-        const { id } = req.query;
+        const { id, page } = req.query;
+        const skip = page > 1 ? (page - 1) * 10 : 0;
+
         const conversations = await Conversation.find({
             $or: [{ "sender._id": id }, { "receiver._id": id }],
-        }).sort({ updatedAt: -1 });
+        })
+            .sort({ updatedAt: -1 })
+            .limit(10)
+            .skip(skip);
 
-        res.send(conversations);
+        const total = await Conversation.find({
+            $or: [{ "sender._id": id }, { "receiver._id": id }],
+        }).count();
+
+        res.set({ "Access-Control-Expose-Headers": "*", Total: total }).send(
+            conversations
+        );
     } catch (err) {
         next({ message: "Get conversations request failed." });
     }
